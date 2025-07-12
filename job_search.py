@@ -11,6 +11,8 @@ queries = [
     "Entry level Low code Developer jobs site:wellfound.com"
 ]
 
+LOG_FILE = "job_log.txt"
+
 def fetch_job_links(query):
     headers = {"User-Agent": "Mozilla/5.0"}
     url = f"https://www.bing.com/search?q={requests.utils.quote(query)}"
@@ -27,6 +29,17 @@ def fetch_job_links(query):
 
     return links
 
+def load_logged_links():
+    if not os.path.exists(LOG_FILE):
+        return set()
+    with open(LOG_FILE, "r") as f:
+        return set(line.strip() for line in f.readlines())
+
+def save_logged_links(new_links):
+    with open(LOG_FILE, "a") as f:
+        for link in new_links:
+            f.write(link + "\n")
+
 def send_email(subject, body):
     sender = os.environ["EMAIL_USER"]
     password = os.environ["EMAIL_PASS"]
@@ -42,16 +55,30 @@ def send_email(subject, body):
         server.send_message(msg)
 
 def main():
-    body = f"Daily Job Digest - {datetime.now().strftime('%B %d, %Y')}\n\n"
+    seen_links = load_logged_links()
+    all_new_links = []
+    body = f"Job Digest - {datetime.now().strftime('%B %d, %Y, %I:%M %p')}\n\n"
 
     for query in queries:
-        body += f" {query}\n"
+        body += f"{query}\n"
         results = fetch_job_links(query)
-        for title, link in results:
+        new_results = [(title, link) for title, link in results if link not in seen_links]
+
+        if not new_results:
+            body += "No new jobs found.\n\n"
+            continue
+
+        for title, link in new_results:
             body += f"- {title}\n  {link}\n"
+            all_new_links.append(link)
         body += "\n"
 
-    send_email("Daily Job Search Results", body)
+    if all_new_links:
+        send_email("Job Search Update", body)
+        save_logged_links(all_new_links)
+        print(f"Sent {len(all_new_links)} new job(s).")
+    else:
+        print("No new jobs to send.")
 
 if __name__ == "__main__":
     main()
