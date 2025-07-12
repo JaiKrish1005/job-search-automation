@@ -6,10 +6,25 @@ from email.mime.text import MIMEText
 import os
 
 queries = [
-    "Entry level SDE 1 jobs site:wellfound.com",
-    "Entry level Solution Engineer jobs site:wellfound.com",
-    "Entry level Low code Developer jobs site:wellfound.com"
+    # SDE 1
+    "SDE 1 fresher remote jobs site:indeed.com",
+    "SDE 1 fresher bangalore jobs site:indeed.com",
+    "SDE 1 fresher remote jobs site:glassdoor.com",
+    "SDE 1 fresher bangalore jobs site:glassdoor.com",
+
+    # Solution Engineer
+    "Solution Engineer fresher remote jobs site:indeed.com",
+    "Solution Engineer fresher bangalore jobs site:indeed.com",
+    "Solution Engineer fresher remote jobs site:glassdoor.com",
+    "Solution Engineer fresher bangalore jobs site:glassdoor.com",
+
+    # Low Code Developer
+    "Low code developer fresher remote jobs site:indeed.com",
+    "Low code developer fresher bangalore jobs site:indeed.com",
+    "Low code developer fresher remote jobs site:glassdoor.com",
+    "Low code developer fresher bangalore jobs site:glassdoor.com"
 ]
+
 
 LOG_FILE = "job_log.txt"
 
